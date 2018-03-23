@@ -11,16 +11,16 @@ import "time"
 
 // TimeCache interface defines necessary methods
 type TimeCache interface {
-	Contains(string) bool
+	Contains(string) (bool, time.Time)
 	Push(string)
 	Pop()
 }
 
 // SliceCache is an implementation of the time cache which uses two equal sized
-// slices - one tracking keys, the other the time. kQueue[i] -> tQueue[i]
+// slices - one tracking keys, the other the time. keys[i] -> times[i]
 type SliceCache struct {
-	kQueue  []string    // unique key in the cache
-	tQueue  []time.Time // time in seconds since epoch when the entry was added to cache
+	keys    []string    // unique key in the cache
+	times   []time.Time // time in seconds since epoch when the entry was added to cache
 	timeout time.Duration
 	count   int // "low" mark - oldest entires in cache are here
 }
@@ -32,47 +32,48 @@ type DictCache struct {
 	count   int
 }
 
-func (c *SliceCache) Contains(key string) bool {
+func (c *SliceCache) Contains(key string) (bool, time.Time) {
 	c.Pop()
-	for _, k := range c.kQueue {
+	for i, k := range c.keys {
 		if k == key {
-			return true
+			return true, c.times[i]
 		}
 	}
 	c.Push(key)
-	return false
+	return false, time.Now()
 }
 
 func (c *SliceCache) Push(key string) {
 	if key == "" {
 		return
 	}
-	c.kQueue = append(c.kQueue, key)
-	c.tQueue = append(c.tQueue, time.Now())
+	c.keys = append(c.keys, key)
+	c.times = append(c.times, time.Now())
 	c.count++
 }
 
 func (c *SliceCache) Pop() {
 	f := 0 // front of the stack for trimming
-	for i, t := range c.tQueue {
+	for i, t := range c.times {
 		if time.Since(t) > c.timeout {
 			f = i + 1
 		}
 	}
-	c.kQueue = c.kQueue[f:]
-	c.tQueue = c.tQueue[f:]
+	c.keys = c.keys[f:]
+	c.times = c.times[f:]
 	c.count = c.count - f
 }
 
-func (c *DictCache) Contains(key string) bool {
+func (c *DictCache) Contains(key string) (bool, time.Time) {
 	c.Pop()
-	for k, _ := range c.entries {
+	for k := range c.entries {
+		a
 		if k == key {
-			return true
+			return true, c.entries[k]
 		}
 	}
 	c.Push(key)
-	return false
+	return false, time.Now()
 
 }
 
