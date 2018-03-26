@@ -32,8 +32,14 @@ type DictCache struct {
 	count   int
 }
 
+// Contains returns boolean of if the cache contains key, as well as time key
+// was added. If key is not in cache, returns false and adds entry to cache
 func (c *SliceCache) Contains(key string) (bool, time.Time) {
 	c.Pop()
+	if c.count == 0 {
+		c.Push(key)
+		return false, time.Now()
+	}
 	for i, k := range c.keys {
 		if k == key {
 			return true, c.times[i]
@@ -43,6 +49,7 @@ func (c *SliceCache) Contains(key string) (bool, time.Time) {
 	return false, time.Now()
 }
 
+// Push adds an entry to the cache
 func (c *SliceCache) Push(key string) {
 	if key == "" {
 		return
@@ -52,22 +59,28 @@ func (c *SliceCache) Push(key string) {
 	c.count++
 }
 
+// Pop removes all outdated entries from the cache. For the slice
+// implmentation, all outdated entries are removed at the end, unlike the dict
+// implementation
 func (c *SliceCache) Pop() {
 	f := 0 // front of the stack for trimming
-	for i, t := range c.times {
-		if time.Since(t) > c.timeout {
-			f = i + 1
-		}
+	for i := 0; time.Since(c.times[i]) > c.timeout; i++ {
+		f = i + 1
 	}
 	c.keys = c.keys[f:]
 	c.times = c.times[f:]
 	c.count = c.count - f
 }
 
+// Contains returns boolean of if the cache contains key, as well as time key
+// was added. If key is not in cache, returns false and adds entry to cache
 func (c *DictCache) Contains(key string) (bool, time.Time) {
 	c.Pop()
+	if c.count == 0 {
+		c.Push(key)
+		return false, time.Now()
+	}
 	for k := range c.entries {
-		a
 		if k == key {
 			return true, c.entries[k]
 		}
@@ -77,6 +90,7 @@ func (c *DictCache) Contains(key string) (bool, time.Time) {
 
 }
 
+// Push adds an entry to the cache
 func (c *DictCache) Push(key string) {
 	if key == "" {
 		return
@@ -85,10 +99,13 @@ func (c *DictCache) Push(key string) {
 	c.count++
 }
 
+// Pop removes all outdated entries from the cache. In the dict inpmentation,
+// the entire cache is read and any keys which have expired are removed
 func (c *DictCache) Pop() {
 	for k, t := range c.entries {
 		if time.Since(t) > c.timeout {
 			delete(c.entries, k)
+			c.count--
 		}
 	}
 }
