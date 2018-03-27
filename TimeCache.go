@@ -22,14 +22,14 @@ type SliceCache struct {
 	keys    []string    // unique key in the cache
 	times   []time.Time // time in seconds since epoch when the entry was added to cache
 	timeout time.Duration
-	count   int // "low" mark - oldest entires in cache are here
+	count   int // number of entires in the cache
 }
 
 // DictCache is an implementation of the time cache which uses a dict
 type DictCache struct {
 	entries map[string]time.Time // A map from a unique key to a time
 	timeout time.Duration
-	count   int
+	count   int // number of entires in the cache
 }
 
 // Contains returns boolean of if the cache contains key, as well as time key
@@ -64,8 +64,12 @@ func (c *SliceCache) Push(key string) {
 // implementation
 func (c *SliceCache) Pop() {
 	f := 0 // front of the stack for trimming
-	for i := 0; time.Since(c.times[i]) > c.timeout; i++ {
-		f = i + 1
+	for i, t := range c.times {
+		if time.Since(t) > c.timeout {
+			f = i + 1
+			continue
+		}
+		break
 	}
 	c.keys = c.keys[f:]
 	c.times = c.times[f:]
@@ -108,4 +112,12 @@ func (c *DictCache) Pop() {
 			c.count--
 		}
 	}
+}
+
+// NewDictCache is a contructor to intialize a new cache - the dictionary must
+// be declared with make
+func NewDictCache() *DictCache {
+	var d DictCache
+	d.entries = make(map[string]time.Time)
+	return &d
 }
