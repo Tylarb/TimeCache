@@ -8,7 +8,8 @@ Two different executions of this idea, one as a slice, the other as a dict.
 Test Results:
 
 ```
-TimeCache(master*)$ go test -v
+// Cache size = 10000000
+$ go test -v
 === RUN   TestSliceAdd
 --- PASS: TestSliceAdd (4.22s)
 === RUN   TestSliceContains1
@@ -34,13 +35,19 @@ TimeCache(master*)$ go test -v
 === RUN   TestDictExpire
 --- PASS: TestDictExpire (31.94s)
 PASS
-ok  	_/Users/tramer/Go/src/github.com/Tylarb/TimeCache	76.719s
 
-TimeCache(master*)$ go test -bench .
+
+// Cache size = 10000
+$ go test -run=XXX -bench=.
 goos: darwin
 goarch: amd64
-BenchmarkSliceContains-8   	       1	5000418849 ns/op
-BenchmarkDictContains-8    	       1	5290397855 ns/op
-PASS
-ok  	_/Users/tramer/Go/src/github.com/Tylarb/TimeCache	88.918s
+BenchmarkSliceContainsRand-8   	  100000	     16469 ns/op
+BenchmarkSliceContainsLow-8    	 3000000	       426 ns/op
+BenchmarkSliceContainsHigh-8   	   50000	     35359 ns/op
+BenchmarkDictContainsRand-8    	    5000	    382344 ns/op
+BenchmarkDictContainsLow-8     	    5000	    358948 ns/op
+BenchmarkDictContainsHigh-8    	    3000	    386303 ns/op
+
+// Cache size = 1000000
+
 ```
