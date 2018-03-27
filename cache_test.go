@@ -10,6 +10,7 @@ package timeCache
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 )
@@ -179,15 +180,14 @@ var dBench DictCache
 
 func BenchmarkSliceContains(b *testing.B) {
 	sBench.timeout = timeout
-
-	for i := 0; i < b.N; i++ {
+	for i := 0; i < CACHE_SIZE; i++ {
 		key := fmt.Sprintf("key-%d", i)
-		s.Contains(key)
+		sBench.Push(key)
 	}
-	time.Sleep(time.Duration(5) * time.Second)
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		key := fmt.Sprintf("key-%d", i)
-		s.Contains(key)
+		key := fmt.Sprintf("key-%d", rand.Intn(CACHE_SIZE-1))
+		sBench.Contains(key)
 	}
 
 }
@@ -195,15 +195,14 @@ func BenchmarkSliceContains(b *testing.B) {
 func BenchmarkDictContains(b *testing.B) {
 	dBench.timeout = timeout
 	dBench.entries = make(map[string]time.Time)
-
-	for i := 0; i < b.N; i++ {
+	for i := 0; i < CACHE_SIZE; i++ {
 		key := fmt.Sprintf("key-%d", i)
-		d.Contains(key)
+		sBench.Push(key)
 	}
-	time.Sleep(time.Duration(5) * time.Second)
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		key := fmt.Sprintf("key-%d", i)
-		d.Contains(key)
+		key := fmt.Sprintf("key-%d", rand.Intn(CACHE_SIZE-1))
+		dBench.Contains(key)
 	}
 
 }
