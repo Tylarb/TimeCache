@@ -41,13 +41,27 @@ PASS
 $ go test -run=XXX -bench=.
 goos: darwin
 goarch: amd64
-BenchmarkSliceContainsRand-8   	  100000	     16469 ns/op
-BenchmarkSliceContainsLow-8    	 3000000	       426 ns/op
-BenchmarkSliceContainsHigh-8   	   50000	     35359 ns/op
-BenchmarkDictContainsRand-8    	    5000	    382344 ns/op
-BenchmarkDictContainsLow-8     	    5000	    358948 ns/op
-BenchmarkDictContainsHigh-8    	    3000	    386303 ns/op
+BenchmarkSliceDoesNotContainRand-8   	   50000	     33293 ns/op
+BenchmarkSliceContainsRand-8         	  100000	     19377 ns/op
+BenchmarkSliceContainsLow-8          	 3000000	       425 ns/op
+BenchmarkSliceContainsHigh-8         	   50000	     33946 ns/op
+BenchmarkDictDoesNotContainRand-8    	    3000	    490225 ns/op
+BenchmarkDictContainsRand-8          	    3000	    370982 ns/op
+BenchmarkDictContainsLow-8           	    3000	    381490 ns/op
+BenchmarkDictContainsHigh-8          	    5000	    398907 ns/op
+PASS
 
 // Cache size = 1000000
-
+$ go test -run=XXX -bench=.
+goos: darwin
+goarch: amd64
+BenchmarkSliceDoesNotContainRand-8   	     100	  13947496 ns/op
+BenchmarkSliceContainsRand-8         	     100	  26063085 ns/op
+BenchmarkSliceContainsLow-8          	 3000000	       481 ns/op
+BenchmarkSliceContainsHigh-8         	      30	  58677970 ns/op
+BenchmarkDictDoesNotContainRand-8    	       2	 547248957 ns/op
+BenchmarkDictContainsRand-8          	       2	 627374031 ns/op
+BenchmarkDictContainsLow-8           	       3	 522994370 ns/op
+BenchmarkDictContainsHigh-8          	       2	 810512985 ns/op
+PASS
 ```
