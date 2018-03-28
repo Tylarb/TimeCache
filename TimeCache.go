@@ -64,9 +64,9 @@ func (c *SliceCache) Push(key string) {
 // implementation
 func (c *SliceCache) Pop() {
 	f := 0 // front of the stack for trimming
-	for i, t := range c.times {
+	for _, t := range c.times {
 		if time.Since(t) > c.timeout {
-			f = i + 1
+			f++
 			continue
 		}
 		break
