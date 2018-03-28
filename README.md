@@ -8,7 +8,8 @@ Two different executions of this idea, one as a slice, the other as a dict.
 Test Results:
 
 ```
-TimeCache(master*)$ go test -v
+// Cache size = 10000000
+$ go test -v
 === RUN   TestSliceAdd
 --- PASS: TestSliceAdd (4.22s)
 === RUN   TestSliceContains1
@@ -34,13 +35,33 @@ TimeCache(master*)$ go test -v
 === RUN   TestDictExpire
 --- PASS: TestDictExpire (31.94s)
 PASS
-ok  	_/Users/tramer/Go/src/github.com/Tylarb/TimeCache	76.719s
 
-TimeCache(master*)$ go test -bench .
+
+// Cache size = 10000
+$ go test -run=XXX -bench=.
 goos: darwin
 goarch: amd64
-BenchmarkSliceContains-8   	       1	5000418849 ns/op
-BenchmarkDictContains-8    	       1	5290397855 ns/op
+BenchmarkSliceDoesNotContainRand-8   	   50000	     33293 ns/op
+BenchmarkSliceContainsRand-8         	  100000	     19377 ns/op
+BenchmarkSliceContainsLow-8          	 3000000	       425 ns/op
+BenchmarkSliceContainsHigh-8         	   50000	     33946 ns/op
+BenchmarkDictDoesNotContainRand-8    	    3000	    490225 ns/op
+BenchmarkDictContainsRand-8          	    3000	    370982 ns/op
+BenchmarkDictContainsLow-8           	    3000	    381490 ns/op
+BenchmarkDictContainsHigh-8          	    5000	    398907 ns/op
 PASS
-ok  	_/Users/tramer/Go/src/github.com/Tylarb/TimeCache	88.918s
+
+// Cache size = 1000000
+$ go test -run=XXX -bench=.
+goos: darwin
+goarch: amd64
+BenchmarkSliceDoesNotContainRand-8   	     100	  13947496 ns/op
+BenchmarkSliceContainsRand-8         	     100	  26063085 ns/op
+BenchmarkSliceContainsLow-8          	 3000000	       481 ns/op
+BenchmarkSliceContainsHigh-8         	      30	  58677970 ns/op
+BenchmarkDictDoesNotContainRand-8    	       2	 547248957 ns/op
+BenchmarkDictContainsRand-8          	       2	 627374031 ns/op
+BenchmarkDictContainsLow-8           	       3	 522994370 ns/op
+BenchmarkDictContainsHigh-8          	       2	 810512985 ns/op
+PASS
 ```
