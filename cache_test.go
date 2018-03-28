@@ -16,7 +16,7 @@ import (
 )
 
 const TIMEOUT = 30
-const CACHE_SIZE = 10000000 // test includes key 1,000,000 so set to higher than this
+const CacheSize = 10000000 // test includes key 1,000,000 so set to higher than this
 
 var timeout = time.Duration(TIMEOUT) * time.Second
 
@@ -26,7 +26,7 @@ var d DictCache
 func TestSliceAdd(t *testing.T) {
 	s.timeout = timeout
 
-	for i := 0; i < CACHE_SIZE; i++ {
+	for i := 0; i < CacheSize; i++ {
 		key := fmt.Sprintf("key-%d", i)
 		s.Push(key)
 	}
@@ -71,7 +71,6 @@ func TestSliceDoesNotContain(t *testing.T) {
 		t.Log("keyTEST has been added and should now be in the cache")
 		t.Fail()
 	}
-
 }
 
 func TestSliceExpire(t *testing.T) {
@@ -87,7 +86,6 @@ func TestSliceExpire(t *testing.T) {
 		t.Log("key should have expired")
 		t.Fail()
 	}
-
 }
 
 func TestDictCreate(t *testing.T) {
@@ -105,14 +103,13 @@ func TestDictCreate(t *testing.T) {
 		t.Log("Test cache should only contain one entry")
 		t.Fail()
 	}
-
 }
 
 func TestDictAdd(t *testing.T) {
 	d.timeout = timeout
 	d.entries = make(map[string]time.Time)
 
-	for i := 0; i < CACHE_SIZE; i++ {
+	for i := 0; i < CacheSize; i++ {
 		key := fmt.Sprintf("key-%d", i)
 		d.Push(key)
 	}
@@ -156,7 +153,6 @@ func TestDictDoesNotContain(t *testing.T) {
 		t.Log("keyTEST has been added and should now be in the cache")
 		t.Fail()
 	}
-
 }
 
 func TestDictExpire(t *testing.T) {
@@ -172,37 +168,120 @@ func TestDictExpire(t *testing.T) {
 		t.Log("key should have expired")
 		t.Fail()
 	}
-
 }
 
-var sBench SliceCache
-var dBench DictCache
-
-func BenchmarkSliceContains(b *testing.B) {
+func BenchmarkSliceDoesNotContainRand(b *testing.B) {
+	var sBench SliceCache
 	sBench.timeout = timeout
-	for i := 0; i < CACHE_SIZE; i++ {
+	for i := 0; i < CacheSize; i++ {
 		key := fmt.Sprintf("key-%d", i)
 		sBench.Push(key)
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		key := fmt.Sprintf("key-%d", rand.Intn(CACHE_SIZE-1))
+		key := fmt.Sprintf("NONkey-%d", rand.Intn(CacheSize-1))
 		sBench.Contains(key)
 	}
-
 }
 
-func BenchmarkDictContains(b *testing.B) {
-	dBench.timeout = timeout
-	dBench.entries = make(map[string]time.Time)
-	for i := 0; i < CACHE_SIZE; i++ {
+func BenchmarkSliceContainsRand(b *testing.B) {
+	var sBench SliceCache
+	sBench.timeout = timeout
+	for i := 0; i < CacheSize; i++ {
 		key := fmt.Sprintf("key-%d", i)
 		sBench.Push(key)
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		key := fmt.Sprintf("key-%d", rand.Intn(CACHE_SIZE-1))
+		key := fmt.Sprintf("key-%d", rand.Intn(CacheSize-1))
+		sBench.Contains(key)
+	}
+}
+
+func BenchmarkSliceContainsLow(b *testing.B) {
+	var sBench SliceCache
+	sBench.timeout = timeout
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		sBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("key-%d", rand.Intn(100))
+		sBench.Contains(key)
+	}
+}
+
+func BenchmarkSliceContainsHigh(b *testing.B) {
+	var sBench SliceCache
+	sBench.timeout = timeout
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		sBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("key-%d", rand.Intn(100)+CacheSize-101)
+		sBench.Contains(key)
+	}
+}
+
+func BenchmarkDictDoesNotContainRand(b *testing.B) {
+	var dBench DictCache
+	dBench.timeout = timeout
+	dBench.entries = make(map[string]time.Time)
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		dBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("NONkey-%d", rand.Intn(CacheSize-1))
 		dBench.Contains(key)
 	}
+}
 
+func BenchmarkDictContainsRand(b *testing.B) {
+	var dBench DictCache
+	dBench.timeout = timeout
+	dBench.entries = make(map[string]time.Time)
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		dBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("key-%d", rand.Intn(CacheSize-1))
+		dBench.Contains(key)
+	}
+}
+
+func BenchmarkDictContainsLow(b *testing.B) {
+	var dBench DictCache
+	dBench.timeout = timeout
+	dBench.entries = make(map[string]time.Time)
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		dBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("key-%d", rand.Intn(100))
+		dBench.Contains(key)
+	}
+}
+
+func BenchmarkDictContainsHigh(b *testing.B) {
+	var dBench DictCache
+	dBench.timeout = timeout
+	dBench.entries = make(map[string]time.Time)
+	for i := 0; i < CacheSize; i++ {
+		key := fmt.Sprintf("key-%d", i)
+		dBench.Push(key)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		key := fmt.Sprintf("key-%d", rand.Intn(100)+CacheSize-101)
+		dBench.Contains(key)
+	}
 }
