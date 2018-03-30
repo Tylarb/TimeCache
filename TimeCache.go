@@ -76,6 +76,12 @@ func (c *SliceCache) Pop() {
 	c.count = c.count - f
 }
 
+func NewSliceCache(t int) *SliceCache {
+	var s SliceCache
+	s.timeout = time.Duration(t) * time.Second
+	return &s
+}
+
 // Contains returns boolean of if the cache contains key, as well as time key
 // was added. If key is not in cache, returns false and adds entry to cache
 func (c *DictCache) Contains(key string) (bool, time.Time) {
@@ -116,8 +122,9 @@ func (c *DictCache) Pop() {
 
 // NewDictCache is a contructor to intialize a new cache - the dictionary must
 // be declared with make
-func NewDictCache() *DictCache {
+func NewDictCache(t int) *DictCache {
 	var d DictCache
 	d.entries = make(map[string]time.Time)
+	d.timeout = time.Duration(t) * time.Second
 	return &d
 }

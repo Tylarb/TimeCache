@@ -23,6 +23,15 @@ var timeout = time.Duration(TIMEOUT) * time.Second
 var s SliceCache
 var d DictCache
 
+func TestSliceCreate(t *testing.T) {
+	var cache = NewSliceCache(TIMEOUT)
+	cache.Contains("testKey")
+	if cache.count != 1 {
+		t.Log("Cache size should be exactly 1 after new argument added")
+		t.Fail()
+	}
+}
+
 func TestSliceAdd(t *testing.T) {
 	s.timeout = timeout
 
@@ -89,7 +98,7 @@ func TestSliceExpire(t *testing.T) {
 }
 
 func TestDictCreate(t *testing.T) {
-	testDictCache := NewDictCache()
+	testDictCache := NewDictCache(TIMEOUT)
 	if testDictCache.count > 0 {
 		t.Log("new cache should have 0 entires")
 		t.Fail()
