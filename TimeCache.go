@@ -32,7 +32,7 @@ type DictCache struct {
 	count   int // number of entires in the cache
 }
 
-// Contains returns boolean of if the cache contains key, as well as time key
+// Contains returns boolean true if the cache contains key, as well as time key
 // was added. If key is not in cache, returns false and adds entry to cache
 func (c *SliceCache) Contains(key string) (bool, time.Time) {
 	c.Pop()
