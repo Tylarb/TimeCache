@@ -16,7 +16,7 @@ import (
 )
 
 const TIMEOUT = 30
-const CacheSize = 10000000 // test includes key 1,000,000 so set to higher than this
+const CacheSize = 1000
 
 var timeout = time.Duration(TIMEOUT) * time.Second
 
@@ -50,11 +50,11 @@ func TestSliceContains1(t *testing.T) {
 	}
 }
 
-func TestSliceContains1000000(t *testing.T) {
+func TestSliceContains1000(t *testing.T) {
 	var c bool
-	c, _ = s.Contains("key-1000000")
+	c, _ = s.Contains("key-1000")
 	if !c {
-		t.Log("key-1000000 should be included in this cache")
+		t.Log("key-1000 should be included in this cache")
 		t.Fail()
 	}
 }
@@ -133,11 +133,11 @@ func TestDictContains1(t *testing.T) {
 	}
 }
 
-func TestDictContains1000000(t *testing.T) {
+func TestDictContains1000(t *testing.T) {
 	var c bool
-	c, _ = d.Contains("key-1000000")
+	c, _ = d.Contains("key-1000")
 	if !c {
-		t.Log("key-1000000 should be included in this cache")
+		t.Log("key-1000 should be included in this cache")
 		t.Fail()
 	}
 }
