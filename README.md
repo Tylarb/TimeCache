@@ -1,4 +1,4 @@
-# TimeCache
+# TimeCache  [![Build Status](https://travis-ci.org/Tylarb/TimeCache.svg?branch=master)](https://travis-ci.org/Tylarb/TimeCache)
 Interface of a timed cache structure in golang
 
 
