@@ -16,7 +16,7 @@ import (
 )
 
 const TIMEOUT = 30
-const CacheSize = 1000
+const CacheSize = 10000
 
 var timeout = time.Duration(TIMEOUT) * time.Second
 
